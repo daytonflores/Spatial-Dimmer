@@ -28,45 +28,138 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+
 /**
- * @file    SpatialDimmer.c
- * @brief   Application entry point.
+ * @file    main.c
+ * @author	Dayton Flores (dafl2542@colorado.edu)
+ * @date	12/11/2022
+ * @brief   Application entry point
  */
+
+
+
+/**
+ * Include pre-defined libraries
+ */
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "board.h"
 #include "peripherals.h"
 #include "pin_mux.h"
 #include "clock_config.h"
 #include "MKL25Z4.h"
 #include "fsl_debug_console.h"
-/* TODO: insert other include files here. */
 
-/* TODO: insert other definitions and declarations here. */
+
+
+/**
+ * Include user-defined libraries
+ */
+#include "bitops.h"
+#include "led.h"
+#include "tpm.h"
+
+
+
+/**
+ * Insert other definitions and declarations here.
+ */
+
+
 
 /*
- * @brief   Application entry point.
+ * @brief   Application entry point
  */
 int main(void) {
 
-    /* Init board hardware. */
+	/**
+	 * Init board hardware
+	 */
     BOARD_InitBootPins();
     BOARD_InitBootClocks();
     BOARD_InitBootPeripherals();
+
+
 #ifndef BOARD_INIT_DEBUG_CONSOLE_PERIPHERAL
-    /* Init FSL debug console. */
+
+    /**
+     * Init FSL debug console
+     */
     BOARD_InitDebugConsole();
 #endif
 
-    printf("Hello World\n");
 
-    /* Force the counter to be placed into memory. */
-    volatile static int i = 0 ;
-    /* Enter an infinite loop, just incrementing a counter. */
+
+    /**
+     * Initialize on-board LEDs
+     */
+    init_red_onboard_led(analog);
+    init_green_onboard_led(analog);
+    init_blue_onboard_led(analog);
+
+
+
+    /**
+     * Initialize on-board TPM modules
+     * 	- TPM2 channel 0 connects to red on-board LED
+     * 	- TPM2 channel 1 connects to green on-board LED
+     * 	- TPM0 channel 1 connects to blue on-board LED
+     */
+    init_onboard_tpm2(TPM2_RED_LED_CHANNEL, TPM_MOD);
+    init_onboard_tpm2(TPM2_GREEN_LED_CHANNEL, TPM_MOD);
+    init_onboard_tpm0(TPM0_BLUE_LED_CHANNEL, TPM_MOD);
+
+
+
+    /**
+     * Enter an infinite loop
+     */
     while(1) {
-        i++ ;
-        /* 'Dummy' NOP to allow source level single stepping of
-            tight while() loop */
-        __asm volatile ("nop");
+    	for(int i = 0; i < 125000; i++);
+    	if(current_red_level >= RGB_MAX || current_red_level <= RGB_MIN){
+    		step_red_level = (-step_red_level);
+    	}
+    	if(current_green_level >= RGB_MAX || current_green_level <= RGB_MIN){
+    		step_green_level = (-step_green_level);
+    	}
+    	if(current_blue_level >= RGB_MAX || current_blue_level <= RGB_MIN){
+    		step_blue_level = (-step_blue_level);
+    	}
+
+        current_red_level += step_red_level;
+        current_green_level += step_green_level;
+        current_blue_level += step_blue_level;
+
+        if(current_red_level < RGB_MIN){
+        	current_red_level = RGB_MIN;
+        }
+        else if(current_red_level > RGB_MAX){
+        	current_red_level = RGB_MAX;
+        }
+
+        if(current_green_level < RGB_MIN){
+        	current_green_level = RGB_MIN;
+        }
+        else if(current_green_level > RGB_MAX){
+        	current_green_level = RGB_MAX;
+        }
+
+        if(current_blue_level < RGB_MIN){
+        	current_blue_level = RGB_MIN;
+        }
+        else if(current_blue_level > RGB_MAX){
+        	current_blue_level = RGB_MAX;
+        }
+
+    	analog_control_onboard_leds(white, analog_set);
     }
-    return 0 ;
+
+
+
+    /**
+     * Program should never reach this point
+     */
+    return EXIT_SUCCESS;
 }

@@ -60,6 +60,7 @@
 #include "bitops.h"
 #include "led.h"
 #include "tpm.h"
+#include "i2c.h"
 
 
 
@@ -110,6 +111,13 @@ int main(void) {
     init_onboard_tpm2(TPM2_RED_LED_CHANNEL, TPM_MOD);
     init_onboard_tpm2(TPM2_GREEN_LED_CHANNEL, TPM_MOD);
     init_onboard_tpm0(TPM0_BLUE_LED_CHANNEL, TPM_MOD);
+
+
+
+    /**
+     * Initialize on-board I2C0
+     */
+    init_onboard_i2c0();
 
 
 

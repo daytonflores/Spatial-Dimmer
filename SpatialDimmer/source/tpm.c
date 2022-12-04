@@ -401,12 +401,12 @@ uint8_t get_smallest_prescaler(uint32_t tpm_clock_hz, uint32_t tpm_pwm_hz){
 
 
 
-void analog_control_onboard_leds(led_t led, led_action_t led_action){
+void analog_control_onboard_leds(led_color_t led_color, led_action_t led_action){
 
 	/**
 	 * Control LEDs based on specified LED(s), then action
 	 */
-	switch(led){
+	switch(led_color){
 	case red:
 		switch(led_action){
 		case analog_clear:

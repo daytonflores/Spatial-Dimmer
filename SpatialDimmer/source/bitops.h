@@ -13,9 +13,13 @@
 
 
 /**
+ * @brief	Takes user input as bit position and returns a 1-bit mask.
+ * 			For example, giving this macro 18 will return 32-bit value
+ * 			of all 0s except the 18th bit will be 1
  * @param	x - The amount of bits 1 should be shifted to the left
- * @brief	Referenced from Chapter 2 of Alexander G Dean's Embedded Systems Fundamentals with
- * 			ARM Cortex-M Based Microcontrollers: Embedded Systems
+ * @detail
+ * 		Referenced from Chapter 2 of Alexander G Dean's Embedded Systems
+ * 		Fundamentals with ARM Cortex-M Based Microcontrollers: Embedded Systems
  */
 #define MASK(x)\
 	((uint32_t)(1UL << (x)))

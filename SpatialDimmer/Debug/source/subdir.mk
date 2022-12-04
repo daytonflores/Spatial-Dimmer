@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../source/i2c.c \
 ../source/led.c \
 ../source/main.c \
 ../source/mtb.c \
@@ -11,6 +12,7 @@ C_SRCS += \
 ../source/tpm.c 
 
 C_DEPS += \
+./source/i2c.d \
 ./source/led.d \
 ./source/main.d \
 ./source/mtb.d \
@@ -18,6 +20,7 @@ C_DEPS += \
 ./source/tpm.d 
 
 OBJS += \
+./source/i2c.o \
 ./source/led.o \
 ./source/main.o \
 ./source/mtb.o \
@@ -37,7 +40,7 @@ source/%.o: ../source/%.c source/subdir.mk
 clean: clean-source
 
 clean-source:
-	-$(RM) ./source/led.d ./source/led.o ./source/main.d ./source/main.o ./source/mtb.d ./source/mtb.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/tpm.d ./source/tpm.o
+	-$(RM) ./source/i2c.d ./source/i2c.o ./source/led.d ./source/led.o ./source/main.d ./source/main.o ./source/mtb.d ./source/mtb.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/tpm.d ./source/tpm.o
 
 .PHONY: clean-source
 

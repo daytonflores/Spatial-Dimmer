@@ -81,7 +81,7 @@
 
 
 /**
- * @brief	On-board red LED is located at PB18
+ * @brief	On-board red LED is located at PTB18
  */
 #define PORTB_RED_LED_PIN\
 	(18)
@@ -89,7 +89,7 @@
 
 
 /**
- * @brief	On-board green LED is located at PB19
+ * @brief	On-board green LED is located at PTB19
  */
 #define PORTB_GREEN_LED_PIN\
 	(19)
@@ -97,7 +97,7 @@
 
 
 /**
- * @brief	On-board blue LED is located at PD1
+ * @brief	On-board blue LED is located at PTD1
  */
 #define PORTD_BLUE_LED_PIN\
 	(1)
@@ -176,27 +176,7 @@
 
 
 
-/**
- * @brief	The red level current state is transitioning towards
- */
-//volatile uint8_t red_level_end;
-
-
-
-/**
- * @brief	The green level current state is transitioning towards
- */
-//volatile uint8_t green_level_end;
-
-/**
- * @brief	The blue level current state is transitioning towards
- */
-//volatile uint8_t blue_level_end;
-
-
-
 void init_red_onboard_led(led_type_t led_type){
-
 
 	/**
      * Enable clock to Port B for red on-board LED
@@ -208,7 +188,7 @@ void init_red_onboard_led(led_type_t led_type){
     /**
      * Set PTB18 as GPIO for red on-board LED
      *
-     * The MUX selection in PCR is done with bits 10:8, where 001 is configuration as GPIO
+     * The MUX selection in PCR is done with bits 10:8
      */
 	PORTB->PCR[PORTB_RED_LED_PIN] &= ~PORT_PCR_MUX_MASK;
 	switch(led_type){
@@ -252,7 +232,7 @@ void init_green_onboard_led(led_type_t led_type){
     /**
      * Set PTB19 as GPIO for green on-board LED
      *
-     * The MUX selection in PCR is done with bits 10:8, where 001 is configuration as GPIO
+     * The MUX selection in PCR is done with bits 10:8
      */
 	PORTB->PCR[PORTB_GREEN_LED_PIN] &= ~PORT_PCR_MUX_MASK;
 	switch(led_type){
@@ -296,7 +276,7 @@ void init_blue_onboard_led(led_type_t led_type){
     /**
      * Set PTD1 as GPIO for blue on-board LED
      *
-     * The MUX selection in PCR is done with bits 10:8, where 001 is configuration as GPIO
+     * The MUX selection in PCR is done with bits 10:8
      */
 	PORTD->PCR[PORTD_BLUE_LED_PIN] &= ~PORT_PCR_MUX_MASK;
 	switch(led_type){
@@ -327,12 +307,12 @@ void init_blue_onboard_led(led_type_t led_type){
 
 
 
-void digital_control_onboard_leds(led_t led, led_action_t led_action){
+void digital_control_onboard_leds(led_color_t led_color, led_action_t led_action){
 
 	/**
 	 * Control LEDs based on specified LED(s), then action
 	 */
-	switch(led){
+	switch(led_color){
 	case red:
 		switch(led_action){
 		case digital_clear:
@@ -456,52 +436,4 @@ void digital_control_onboard_leds(led_t led, led_action_t led_action){
 	default:
 		break;
 	}
-}
-
-
-
-void clear_onboard_leds(void){
-
-
-
-    /**
-     * Clear all on-board LEDs. Note that on-board LEDs are active-low
-     */
-	//TPM2->CONTROLS[RED_LED_TPM2_CHANNEL].CnV = 0;
-	//TPM2->CONTROLS[GREEN_LED_TPM2_CHANNEL].CnV = 0;
-	//TPM0->CONTROLS[BLUE_LED_TPM0_CHANNEL].CnV = 0;
-}
-
-
-
-void set_onboard_leds(void){
-
-
-
-    /**
-     * Set all on-board LEDs to the current state's RGB levels. Note that on-board LEDs are active-low
-     */
-	//TPM2->CONTROLS[RED_LED_TPM2_CHANNEL].CnV = current.red_level;
-	//TPM2->CONTROLS[GREEN_LED_TPM2_CHANNEL].CnV = current.green_level;
-	//TPM0->CONTROLS[BLUE_LED_TPM0_CHANNEL].CnV = current.blue_level;
-}
-
-
-
-void step_leds(void){
-
-    /**
-     * Step current state's RGB values closer to the expected RGB values of this state.
-     * This function is invoked once per tick, yet the step needs to be recalculated each time
-     * since we are dealing with integers and rounding could take us far from target RGB values.
-     * If we were dealing with floats, then the steps could be calculated during transition_state
-     * and this function would just increment the same steps per tick.
-     */
-	//int8_t red_step = (red_level_end - current.red_level) / (uint8_t)(((SEC_PER_TRANSITION * TICK_HZ)) - ticks_spent_transitioning);
-	//int8_t green_step = (green_level_end - current.green_level) / (uint8_t)(((SEC_PER_TRANSITION * TICK_HZ)) - ticks_spent_transitioning);
-	//int8_t blue_step = (blue_level_end - current.blue_level) / (uint8_t)(((SEC_PER_TRANSITION * TICK_HZ)) - ticks_spent_transitioning);
-
-	//current.red_level += red_step;
-	//current.green_level += green_step;
-	//current.blue_level += blue_step;
 }

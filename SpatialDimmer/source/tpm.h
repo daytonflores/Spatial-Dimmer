@@ -106,21 +106,30 @@ extern int8_t step_blue_level;
 
 /**
  * @brief   Initialize the on-board timer PWM module 0
- */
+ * @param	channel - The TPM0 channel to initialize
+ * @param	mod - The value to load into TPM0->MOD register (this is what
+ * 			TPM timer will count up to) */
 void init_onboard_tpm0(uint32_t channel, uint16_t mod);
 
 
 
 /**
  * @brief   Initialize the on-board timer PWM module 2
+ * @param	channel - The TPM2 channel to initialize
+ * @param	mod - The value to load into TPM2->MOD register (this is what
+ * 			TPM timer will count up to)
  */
 void init_onboard_tpm2(uint32_t channel, uint16_t mod);
 
 
 
 /**
+ * @brief   Calculate the smallest necessary TPM prescaler to provide the
+ * 			highest granularity
+ * @param	tpm_clock_hz - The frequency of the clock TPM will take
+ * 			its reference from
+ * @param	tpm_pwm_hz - The desired frequency of TPM output
  * @return	x for 2^x, where 2^x is the TPM prescaler
- * @brief   Calculate the smallest necessary TPM prescaler to provide the highest granularity
  */
 uint8_t get_smallest_prescaler(uint32_t tpm_clock_hz, uint32_t tpm_pwm_hz);
 
@@ -128,18 +137,23 @@ uint8_t get_smallest_prescaler(uint32_t tpm_clock_hz, uint32_t tpm_pwm_hz);
 
 /**
  * @brief   Control analog signals of on-board LED for specific color(s)
+ * @param	led_color - The LED color(s) to perform the action on
+ * @param	led_action - The action to perform on LED color(s)
  * @detail
- * 		Many operations were referenced from Alexander G Dean (Chapter 2 of Embedded Systems
- * 		Fundamentals with ARM Cortex-M Based Microcontrollers)
+ * 		Many operations were referenced from Alexander G Dean (Chapter 2
+ * 		of Embedded Systems Fundamentals with ARM Cortex-M Based Microcontrollers)
  *
- * 		PCOR:	Port Clear Output Register is a register used to clear some bits on the respective
- * 				port A-E (e.g. writing 0x00000070 to PTA->PCOR will clear bits 6:4 on Port A)
- * 		PSOR:	Port Set Output Register is a register used to set some bits on the respective port
- * 				A-E (e.g. writing 0x00000070 to PTA->PSOR will set bits 6:4 on Port A)
- *		PTOR:	Port Toggle Output Register is a register used to toggle some bits on the respective
- *				port A-E (e.g. writing 0x00000070 to PTA-PTOR will toggle bits 6:4 on Port A)
+ * 		PCOR:	Port Clear Output Register is a register used to clear some
+ * 				bits on the respective port A-E (e.g. writing 0x00000070 to
+ * 				PTA->PCOR will clear bits 6:4 on Port A)
+ * 		PSOR:	Port Set Output Register is a register used to set some bits
+ * 				on the respective port A-E (e.g. writing 0x00000070 to PTA->PSOR
+ * 				will set bits 6:4 on Port A)
+ *		PTOR:	Port Toggle Output Register is a register used to toggle some
+ *				bits on the respective port A-E (e.g. writing 0x00000070 to
+ *				PTA-PTOR will toggle bits 6:4 on Port A)
  */
-void analog_control_onboard_leds(led_t led, led_action_t led_action);
+void analog_control_onboard_leds(led_color_t led_color, led_action_t led_action);
 
 
 

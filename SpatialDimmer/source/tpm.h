@@ -1,8 +1,8 @@
 /**
- * @file    tpm.h
+ * @file	tpm.h
  * @author	Dayton Flores (dafl2542@colorado.edu)
  * @date	12/11/2022
- * @brief   Macros and function headers for TPM (Timer PWM Module)
+ * @brief	Macros and function headers for TPM (Timer PWM Module)
  */
 
 
@@ -65,6 +65,13 @@
 /**
  * @brief	Defined in tpm.c
  */
+extern int rgb_levels;
+
+
+
+/**
+ * @brief	Defined in tpm.c
+ */
 extern int16_t current_red_level;
 
 
@@ -105,7 +112,7 @@ extern int8_t step_blue_level;
 
 
 /**
- * @brief   Initialize the on-board timer PWM module 0
+ * @brief	Initialize the on-board timer PWM module 0
  * @param	channel - The TPM0 channel to initialize
  * @param	mod - The value to load into TPM0->MOD register (this is what
  * 			TPM timer will count up to) */
@@ -114,7 +121,7 @@ void init_onboard_tpm0(uint32_t channel, uint16_t mod);
 
 
 /**
- * @brief   Initialize the on-board timer PWM module 2
+ * @brief	Initialize the on-board timer PWM module 2
  * @param	channel - The TPM2 channel to initialize
  * @param	mod - The value to load into TPM2->MOD register (this is what
  * 			TPM timer will count up to)
@@ -124,7 +131,7 @@ void init_onboard_tpm2(uint32_t channel, uint16_t mod);
 
 
 /**
- * @brief   Calculate the smallest necessary TPM prescaler to provide the
+ * @brief	Calculate the smallest necessary TPM prescaler to provide the
  * 			highest granularity
  * @param	tpm_clock_hz - The frequency of the clock TPM will take
  * 			its reference from
@@ -136,7 +143,7 @@ uint8_t get_smallest_prescaler(uint32_t tpm_clock_hz, uint32_t tpm_pwm_hz);
 
 
 /**
- * @brief   Control analog signals of on-board LED for specific color(s)
+ * @brief	Control analog signals of on-board LED for specific color(s)
  * @param	led_color - The LED color(s) to perform the action on
  * @param	led_action - The action to perform on LED color(s)
  * @detail
@@ -156,5 +163,12 @@ uint8_t get_smallest_prescaler(uint32_t tpm_clock_hz, uint32_t tpm_pwm_hz);
 void analog_control_onboard_leds(led_color_t led_color, led_action_t led_action);
 
 
+
+/**
+ * @brief	Calculate current red LED level with respective to current x
+ * @detail
+ *
+ */
+void init_onboard_tpm2(uint32_t channel, uint16_t mod);
 
 #endif /* TPM_H_ */

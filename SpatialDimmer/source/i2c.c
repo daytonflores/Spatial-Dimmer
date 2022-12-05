@@ -169,22 +169,6 @@
 
 
 /**
- * @brief	Waits until I2C0 interrupt pending flag is set. This indicates
- * 			that a byte and acknowledgment have transferred. Once flag is
- * 			checked, this macro will clear that flag (by writing 1 to it)
- * @detail
- * 		Many operations were referenced from Alexander G Dean (Chapter 8
- * 		of Embedded Systems Fundamentals with ARM Cortex-M Based Microcontrollers)
- */
-#define I2C0_WAIT()\
-	do{\
-		while(!(I2C0->S & I2C_S_IICIF_MASK));\
-		I2C0->S |= I2C_S_IICIF_MASK;\
-	}while(0)
-
-
-
-/**
  * @brief	Instruct I2C0 to send acknowledgment
  * @detail
  * 		Many operations were referenced from Alexander G Dean (Chapter 8
@@ -224,6 +208,53 @@
 
 
 
+/**
+ * @brief	Enable I2C0
+ */
+#define I2C0_ENABLE()\
+	(I2C0->C1 |=  I2C_C1_IICEN_MASK)
+
+
+
+/**
+ * @brief	Disable I2C0
+ */
+#define I2C0_DISABLE()\
+	(I2C0->C1 &=  ~I2C_C1_IICEN_MASK)
+
+
+
+/**
+ * @brief	Set I2C0 to Master mode
+ */
+#define I2C0_MASTER_MODE()\
+	(I2C0->C1 |= I2C_C1_MST_MASK)
+
+
+
+/**
+ * @brief	Set I2C0 to Slave mode
+ */
+#define I2C0_SLAVE_MODE()\
+	(I2C0->C1 &= ~I2C_C1_MST_MASK)
+
+
+
+/**
+ * @brief	The amount of locks to detect on I2C0 bus before declaring line busy
+ */
+#define I2C_LOCK_DETECT_MAX\
+	(200)
+
+
+
+/**
+ * @brief	Used to track number of I2C locks in i2c0_wait()
+ */
+int lock_detect = 0;
+
+
+
 void init_onboard_i2c0(void){
 
 	/**
@@ -235,11 +266,11 @@ void init_onboard_i2c0(void){
 
 
 
-    /**
-     * Set PTE24 as SCL for on-board I2C0
-     * Set PTE25 as SDA for on-board I2C0
-     * The MUX selection in PCR is done with bits 10:8, where 101 is configuration as I2C0 SCL/SDA
-     */
+	/**
+	 * Set PTE24 as SCL for on-board I2C0
+	 * Set PTE25 as SDA for on-board I2C0
+	 * The MUX selection in PCR is done with bits 10:8, where 101 is configuration as I2C0 SCL/SDA
+	 */
 	PORTE->PCR[PORTE_I2C0_SCL_PIN] |= PORT_PCR_MUX(PCR_MUX_SCL_I2C0);
 	PORTE->PCR[PORTE_I2C0_SDA_PIN] |= PORT_PCR_MUX(PCR_MUX_SDA_I2C0);
 
@@ -250,16 +281,16 @@ void init_onboard_i2c0(void){
 	 * 	- ICR to 16
 	 * 	- MULT to x1
 	 */
- 	I2C0->F =
- 		I2C_F_ICR(F_ICR) |
- 		I2C_F_MULT(F_MULT);
+	I2C0->F =
+		I2C_F_ICR(F_ICR) |
+		I2C_F_MULT(F_MULT);
 
 
 
- 	/**
- 	 * Enable I2C and set to master mode
- 	 */
-	I2C0->C1 |= (I2C_C1_IICEN_MASK);
+	/**
+	 * Enable I2C and set to master mode
+	 */
+	I2C0_ENABLE();
 
 
 
@@ -267,7 +298,7 @@ void init_onboard_i2c0(void){
 	 * Configure I2C0 as:
 	 * 	- High Drive (in terms of drive capability of I2C pads)
 	 */
-	I2C0->C2 |= (I2C_C2_HDRS_MASK);
+	I2C0->C2 |= I2C_C2_HDRS_MASK;
 }
 
 
@@ -278,7 +309,7 @@ void i2c0_write_setup(uint8_t device_address, uint8_t register_address){
 	 * Send device address and wait for ACK bit
 	 */
 	I2C0->D = device_address;
-	I2C0_WAIT();
+	i2c0_wait();
 
 
 
@@ -286,7 +317,7 @@ void i2c0_write_setup(uint8_t device_address, uint8_t register_address){
 	 * Send register address and wait for ACK bit
 	 */
 	I2C0->D = register_address;
-	I2C0_WAIT();
+	i2c0_wait();
 }
 
 
@@ -311,7 +342,7 @@ void i2c0_write_byte(uint8_t device_address, uint8_t register_address, uint8_t d
 	 * Send data and wait for ACK bit
 	 */
 	I2C0->D = data;
-	I2C0_WAIT();
+	i2c0_wait();
 
 
 
@@ -329,7 +360,7 @@ void i2c0_read_setup(uint8_t device_address, uint8_t register_address){
 	 * Send device address and wait for ACK bit
 	 */
 	I2C0->D = device_address;
-	I2C0_WAIT();
+	i2c0_wait();
 
 
 
@@ -337,7 +368,7 @@ void i2c0_read_setup(uint8_t device_address, uint8_t register_address){
 	 * Send register address and wait for ACK bit
 	 */
 	I2C0->D = register_address;
-	I2C0_WAIT();
+	i2c0_wait();
 
 
 
@@ -346,7 +377,7 @@ void i2c0_read_setup(uint8_t device_address, uint8_t register_address){
 	 */
 	I2C0_REPEATED_START();
 	I2C0_READ();
-	I2C0_WAIT();
+	i2c0_wait();
 
 
 
@@ -392,7 +423,7 @@ uint8_t i2c0_read_byte(uint8_t device_address, uint8_t register_address){
 	 * Read dummy data and then wait for ACK bit
 	 */
 	data = I2C0->D;
-	I2C0_WAIT();
+	i2c0_wait();
 
 
 
@@ -412,7 +443,7 @@ uint8_t i2c0_read_byte(uint8_t device_address, uint8_t register_address){
 
 
 
-uint8_t i2c_repeated_read_byte(bool is_final_byte){
+uint8_t i2c0_repeated_read_byte(bool is_final_byte){
 
 	/**
 	 * Used to hold dummy data and then valid data afterwards
@@ -422,10 +453,17 @@ uint8_t i2c_repeated_read_byte(bool is_final_byte){
 
 
 	/**
+	 * Reset lock detect count
+	 */
+	lock_detect = 0;
+
+
+
+	/**
 	 * If this is the final byte to be read, set NACK after read
 	 * Else, set ACK after read
 	 */
-	if(is_final_byte)	{
+	if(is_final_byte){
 		I2C0_NACK();
 	}
 	else{
@@ -438,7 +476,7 @@ uint8_t i2c_repeated_read_byte(bool is_final_byte){
 	 * Read dummy data and then wait for ACK bit
 	 */
 	data = I2C0->D;
-	I2C0_WAIT();
+	i2c0_wait();
 
 
 
@@ -477,4 +515,119 @@ void i2c0_stop(void){
 	 * Send Stop sequence to I2C0
 	 */
 	I2C0_STOP();
+}
+
+
+
+void i2c0_wait(void){
+
+	/**
+	 * Reset and calculate number of locks
+	 */
+	lock_detect = 0;
+	while(((I2C0->S & I2C_S_IICIF_MASK) == 0) && (lock_detect < I2C_LOCK_DETECT_MAX)) {
+		lock_detect++;
+	}
+
+
+
+	/**
+	 * If enough locks detected, declare I2C0 line busy
+	 */
+	if(lock_detect >= I2C_LOCK_DETECT_MAX){
+		i2c0_busy();
+	}
+
+
+
+	/**
+	 *
+	 */
+	I2C0->S |= I2C_S_IICIF_MASK;
+}
+
+
+
+void i2c0_busy(void){
+
+	/**
+	 * Reset lock_detect and start I2C0
+	 */
+	lock_detect = 0;
+
+
+
+	/**
+	 * Disable, start, and then enable I2C0
+	 */
+	I2C0_DISABLE();
+	i2c0_start();
+	I2C0_ENABLE();
+
+
+
+	/**
+	 * Configure I2C0:
+	 * 	- Set to Master mode
+	 * 	- Set to Transmit mode
+	 */
+	I2C0_MASTER_MODE();
+	I2C0_TRANSMIT_MODE();
+
+
+
+	/**
+	 * Write 0xFF to clear the line
+	 */
+	I2C0->D = 0xFF;
+
+
+
+	/**
+	 * Wait for interrupt and then clear the interrupt bit by writing to it
+	 */
+	while ((I2C0->S & I2C_S_IICIF_MASK) == 0U);
+
+
+
+	/**
+	 * Clear interrupt bit + arbitration error flag by writing to them
+	 */
+	I2C0->S |= I2C_S_IICIF_MASK;
+	I2C0->S |= I2C_S_ARBL_MASK;
+
+
+
+	/**
+	 * Send start and wait until start is sent
+	 */
+	I2C0_DISABLE();
+	I2C0_TRANSMIT_MODE();
+	I2C0_MASTER_MODE();
+	I2C0_ENABLE();
+
+
+
+	/**
+	 * Send stop and wait until stop is sent
+	 */
+	I2C0_DISABLE();
+	I2C0_MASTER_MODE();
+	I2C0_SLAVE_MODE();
+	I2C0_RECEIVE_MODE();
+	I2C0_ENABLE();
+
+
+	/**
+	 * Clear interrupt bit + arbitration error flag by writing to them
+	 */
+	I2C0->S |= I2C_S_IICIF_MASK;
+	I2C0->S |= I2C_S_ARBL_MASK;
+
+
+
+	/**
+	 * Reset lock_detect now that I2C0 is no longer busy
+	 */
+	lock_detect = 0;
 }

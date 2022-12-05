@@ -1,8 +1,8 @@
 /**
- * @file    tpm.c
+ * @file	tpm.c
  * @author	Dayton Flores (dafl2542@colorado.edu)
  * @date	12/11/2022
- * @brief   Function definitions for TPM (Timer PWM Module)
+ * @brief	Function definitions for TPM (Timer PWM Module)
  */
 
 
@@ -83,9 +83,9 @@
 /**
  * @brief	Configuration for TPM debug mode
  * @detail
- * 		0: LPTPM counter does not increment during debug. Trigger inputs and
- * 		   input capture events are also ignored
- * 		3: LPTPM counter continues to increment in debug mode
+ * 		0:	LPTPM counter does not increment during debug. Trigger inputs and
+ * 			input capture events are also ignored
+ * 		3:	LPTPM counter continues to increment in debug mode
  */
 #define CONF_DBGMODE\
 	(3)
@@ -96,11 +96,11 @@
  * @brief	Selects the LPTPM counter clock modes. When disabling the counter,
  * 			this field remain set until acknowledged in the LPTPM clock domain
  * @detail
- * 		00: LPTPM counter is disabled
- * 		01: LPTPM counter increments on every LPTPM counter clock
- * 		10: LPTPM counter increments on rising edge of LPTPM_EXTCLK synchronized
+ * 		00:	LPTPM counter is disabled
+ * 		01:	LPTPM counter increments on every LPTPM counter clock
+ * 		10:	LPTPM counter increments on rising edge of LPTPM_EXTCLK synchronized
  * 			to the LPTPM counter
- * 		11: Reserved
+ * 		11:	Reserved
  */
 #define SC_CMOD\
 	(1)
@@ -152,6 +152,13 @@
  */
 #define ANALOG_SET_BLUE_LED(x)\
 	(TPM0->CONTROLS[TPM0_BLUE_LED_CHANNEL].CnV = x)
+
+
+
+/**
+ * @brief	The total amount of possible RGB values
+ */
+int rgb_levels = ((RGB_MAX - RGB_MIN) + 1);
 
 
 
@@ -213,9 +220,9 @@ void init_onboard_tpm0(uint32_t channel, uint16_t mod){
 
 
 	/**
-     * Configure SOPT2:
-     * 	- To use MCGFLLCLK as clock source
-     */
+	 * Configure SOPT2:
+	 * 	- To use MCGFLLCLK as clock source
+	 */
 	SIM->SOPT2 &=
 		~(SIM_SOPT2_TPMSRC_MASK |
 		SIM_SOPT2_PLLFLLSEL_MASK);
@@ -226,14 +233,14 @@ void init_onboard_tpm0(uint32_t channel, uint16_t mod){
 
 
 	/**
-     * Set the smallest needed prescaler along with PWM period for
-     * desired PWM frequency
-     *
-     * TPM->SC[PS] holds x for 2^x, where 2^x is the tpm_prescaler
-     *
-     * Configure the TPM SC register:
-     * 	- Count up with divide by tpm_prescaler
-     */
+	 * Set the smallest needed prescaler along with PWM period for
+	 * desired PWM frequency
+	 *
+	 * TPM->SC[PS] holds x for 2^x, where 2^x is the tpm_prescaler
+	 *
+	 * Configure the TPM SC register:
+	 * 	- Count up with divide by tpm_prescaler
+	 */
 	uint8_t tpm_sc_ps;
 	tpm_sc_ps = get_smallest_prescaler(TPM_CLOCK_HZ, TPM_PWM_HZ);
 	TPM0->SC = TPM_SC_PS(tpm_sc_ps);
@@ -241,25 +248,25 @@ void init_onboard_tpm0(uint32_t channel, uint16_t mod){
 
 
 	/**
-     * Load the TPM MOD register
-     */
+	 * Load the TPM MOD register
+	 */
 	TPM0->MOD = mod;
 
 
 
 	/**
-     * Configure the TPM CONF register:
-     * 	- Continue counting operation in debug mode
-     */
+	 * Configure the TPM CONF register:
+	 * 	- Continue counting operation in debug mode
+	 */
 	TPM0->CONF |= TPM_CONF_DBGMODE(CONF_DBGMODE);
 
 
 
 	/**
-     * Configure TPM CnSC:
-     * 	- Edge-aligned PWM
-     * 	- Low-true pulses (set output on match, clear output on reload)
-     */
+	 * Configure TPM CnSC:
+	 * 	- Edge-aligned PWM
+	 * 	- Low-true pulses (set output on match, clear output on reload)
+	 */
 	TPM0->CONTROLS[channel].CnSC =
 		TPM_CnSC_MSB_MASK |
 		TPM_CnSC_ELSA_MASK;
@@ -267,16 +274,16 @@ void init_onboard_tpm0(uint32_t channel, uint16_t mod){
 
 
 	/**
-     * Set initial duty cycle
-     */
+	 * Set initial duty cycle
+	 */
 	TPM0->CONTROLS[channel].CnV = 0;
 
 
 
 	/**
-     * Configure the TPM SC register:
-     * 	- Start TPM
-     */
+	 * Configure the TPM SC register:
+	 * 	- Start TPM
+	 */
 	TPM0->SC |= TPM_SC_CMOD(SC_CMOD);
 }
 
@@ -292,9 +299,9 @@ void init_onboard_tpm2(uint32_t channel, uint16_t mod){
 
 
 	/**
-     * Configure SOPT2:
-     * 	- To use MCGFLLCLK as clock source
-     */
+	 * Configure SOPT2:
+	 * 	- To use MCGFLLCLK as clock source
+	 */
 	SIM->SOPT2 &=
 		~(SIM_SOPT2_TPMSRC_MASK |
 		SIM_SOPT2_PLLFLLSEL_MASK);
@@ -305,14 +312,14 @@ void init_onboard_tpm2(uint32_t channel, uint16_t mod){
 
 
 	/**
-     * Set the smallest needed prescaler along with PWM period for
-     * desired PWM frequency
-     *
-     * TPM->SC[PS] holds x for 2^x, where 2^x is the tpm_prescaler
-     *
-     * Configure the TPM SC register:
-     * 	- Count up with divide by tpm_prescaler
-     */
+	 * Set the smallest needed prescaler along with PWM period for
+	 * desired PWM frequency
+	 *
+	 * TPM->SC[PS] holds x for 2^x, where 2^x is the tpm_prescaler
+	 *
+	 * Configure the TPM SC register:
+	 * 	- Count up with divide by tpm_prescaler
+	 */
 	uint8_t tpm_sc_ps;
 	tpm_sc_ps = get_smallest_prescaler(TPM_CLOCK_HZ, TPM_PWM_HZ);
 	TPM2->SC = TPM_SC_PS(tpm_sc_ps);
@@ -320,25 +327,25 @@ void init_onboard_tpm2(uint32_t channel, uint16_t mod){
 
 
 	/**
-     * Load the TPM MOD register
-     */
+	 * Load the TPM MOD register
+	 */
 	TPM2->MOD = mod;
 
 
 
 	/**
-     * Configure the TPM CONF register:
-     * 	- Continue counting operation in debug mode
-     */
+	 * Configure the TPM CONF register:
+	 * 	- Continue counting operation in debug mode
+	 */
 	TPM2->CONF |= TPM_CONF_DBGMODE(CONF_DBGMODE);
 
 
 
 	/**
-     * Configure TPM CnSC:
-     * 	- Edge-aligned PWM
-     * 	- Low-true pulses (set output on match, clear output on reload)
-     */
+	 * Configure TPM CnSC:
+	 * 	- Edge-aligned PWM
+	 * 	- Low-true pulses (set output on match, clear output on reload)
+	 */
 	TPM2->CONTROLS[channel].CnSC =
 		TPM_CnSC_MSB_MASK |
 		TPM_CnSC_ELSA_MASK;
@@ -346,16 +353,16 @@ void init_onboard_tpm2(uint32_t channel, uint16_t mod){
 
 
 	/**
-     * Set initial duty cycle
-     */
+	 * Set initial duty cycle
+	 */
 	TPM2->CONTROLS[channel].CnV = 0;
 
 
 
 	/**
-     * Configure the TPM SC register:
-     * 	- Start TPM
-     */
+	 * Configure the TPM SC register:
+	 * 	- Start TPM
+	 */
 	TPM2->SC |= TPM_SC_CMOD(SC_CMOD);
 }
 
@@ -365,9 +372,9 @@ uint8_t get_smallest_prescaler(uint32_t tpm_clock_hz, uint32_t tpm_pwm_hz){
 
 
 	/**
-     * Calculate the smallest needed prescaler to allow for largest
-     * possible TPM->MOD value and thus more granular control
-     */
+	 * Calculate the smallest needed prescaler to allow for largest
+	 * possible TPM->MOD value and thus more granular control
+	 */
 
 	uint8_t return_value;
 

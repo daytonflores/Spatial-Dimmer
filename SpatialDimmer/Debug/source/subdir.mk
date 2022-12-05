@@ -7,6 +7,7 @@ C_SRCS += \
 ../source/i2c.c \
 ../source/led.c \
 ../source/main.c \
+../source/mma8451q.c \
 ../source/mtb.c \
 ../source/semihost_hardfault.c \
 ../source/tpm.c 
@@ -15,6 +16,7 @@ C_DEPS += \
 ./source/i2c.d \
 ./source/led.d \
 ./source/main.d \
+./source/mma8451q.d \
 ./source/mtb.d \
 ./source/semihost_hardfault.d \
 ./source/tpm.d 
@@ -23,6 +25,7 @@ OBJS += \
 ./source/i2c.o \
 ./source/led.o \
 ./source/main.o \
+./source/mma8451q.o \
 ./source/mtb.o \
 ./source/semihost_hardfault.o \
 ./source/tpm.o 
@@ -40,7 +43,7 @@ source/%.o: ../source/%.c source/subdir.mk
 clean: clean-source
 
 clean-source:
-	-$(RM) ./source/i2c.d ./source/i2c.o ./source/led.d ./source/led.o ./source/main.d ./source/main.o ./source/mtb.d ./source/mtb.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/tpm.d ./source/tpm.o
+	-$(RM) ./source/i2c.d ./source/i2c.o ./source/led.d ./source/led.o ./source/main.d ./source/main.o ./source/mma8451q.d ./source/mma8451q.o ./source/mtb.d ./source/mtb.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/tpm.d ./source/tpm.o
 
 .PHONY: clean-source
 

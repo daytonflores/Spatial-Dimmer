@@ -1,8 +1,8 @@
 /**
- * @file    led.h
+ * @file	led.h
  * @author	Dayton Flores (dafl2542@colorado.edu)
  * @date	12/11/2022
- * @brief   Macros and function headers for on-board LEDs
+ * @brief	Macros and function headers for on-board LEDs
  */
 
 
@@ -129,7 +129,7 @@ void init_blue_onboard_led(led_type_t led_type);
 
 
 /**
- * @brief   Control digital signals of on-board LED for specific color(s)
+ * @brief	Control digital signals of on-board LED for specific color(s)
  * @param	led_color - The LED color(s) to perform the action on
  * @param	led_action - The action to perform on LED color(s)
  * @detail

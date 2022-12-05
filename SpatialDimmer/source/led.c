@@ -1,8 +1,8 @@
 /**
- * @file    led.c
+ * @file	led.c
  * @author	Dayton Flores (dafl2542@colorado.edu)
  * @date	12/11/2022
- * @brief   Function definitions for on-board LEDs
+ * @brief	Function definitions for on-board LEDs
  */
 
 
@@ -108,7 +108,7 @@
  * @brief	Turn off on-board red LED through digital GPIO port
  */
 #define DIGITAL_CLEAR_RED_LED()\
-	(PTB->PSOR |= MASK(PORTB_RED_LED_PIN))
+	(PTB->PSOR |= MASK(1UL, PORTB_RED_LED_PIN))
 
 
 
@@ -116,7 +116,7 @@
  * @brief	Turn off on-board green LED through digital GPIO port
  */
 #define DIGITAL_CLEAR_GREEN_LED()\
-	(PTB->PSOR |= MASK(PORTB_GREEN_LED_PIN))
+	(PTB->PSOR |= MASK(1UL, PORTB_GREEN_LED_PIN))
 
 
 
@@ -124,7 +124,7 @@
  * @brief	Turn off on-board blue LED through digital GPIO port
  */
 #define DIGITAL_CLEAR_BLUE_LED()\
-	(PTD->PSOR |= MASK(PORTD_BLUE_LED_PIN))
+	(PTD->PSOR |= MASK(1UL, PORTD_BLUE_LED_PIN))
 
 
 
@@ -132,7 +132,7 @@
  * @brief	Turn on on-board red LED through digital GPIO port
  */
 #define DIGITAL_SET_RED_LED()\
-	(PTB->PCOR |= MASK(PORTB_RED_LED_PIN))
+	(PTB->PCOR |= MASK(1UL, PORTB_RED_LED_PIN))
 
 
 
@@ -140,7 +140,7 @@
  * @brief	Turn on on-board green LED through digital GPIO port
  */
 #define DIGITAL_SET_GREEN_LED()\
-	(PTB->PCOR |= MASK(PORTB_GREEN_LED_PIN))
+	(PTB->PCOR |= MASK(1UL, PORTB_GREEN_LED_PIN))
 
 
 
@@ -148,7 +148,7 @@
  * @brief	Turn on on-board blue LED through digital GPIO port
  */
 #define DIGITAL_SET_BLUE_LED()\
-	(PTD->PCOR |= MASK(PORTD_BLUE_LED_PIN))
+	(PTD->PCOR |= MASK(1UL, PORTD_BLUE_LED_PIN))
 
 
 
@@ -156,7 +156,7 @@
  * @brief	Toggle on-board red LED through digital GPIO port
  */
 #define DIGITAL_TOGGLE_RED_LED()\
-	(PTB->PTOR |= MASK(PORTB_RED_LED_PIN))
+	(PTB->PTOR |= MASK(1UL, PORTB_RED_LED_PIN))
 
 
 
@@ -164,7 +164,7 @@
  * @brief	Toggle on-board green LED through digital GPIO port
  */
 #define DIGITAL_TOGGLE_GREEN_LED()\
-	(PTB->PTOR |= MASK(PORTB_GREEN_LED_PIN))
+	(PTB->PTOR |= MASK(1UL, PORTB_GREEN_LED_PIN))
 
 
 
@@ -172,24 +172,24 @@
  * @brief	Toggle on-board blue LED through digital GPIO port
  */
 #define DIGITAL_TOGGLE_BLUE_LED()\
-	(PTD->PTOR |= MASK(PORTD_BLUE_LED_PIN))
+	(PTD->PTOR |= MASK(1UL, PORTD_BLUE_LED_PIN))
 
 
 
 void init_red_onboard_led(led_type_t led_type){
 
 	/**
-     * Enable clock to Port B for red on-board LED
-     */
-    SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
+	 * Enable clock to Port B for red on-board LED
+	 */
+	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
 
 
 
-    /**
-     * Set PTB18 as GPIO for red on-board LED
-     *
-     * The MUX selection in PCR is done with bits 10:8
-     */
+	/**
+	 * Set PTB18 as GPIO for red on-board LED
+	 *
+	 * The MUX selection in PCR is done with bits 10:8
+	 */
 	PORTB->PCR[PORTB_RED_LED_PIN] &= ~PORT_PCR_MUX_MASK;
 	switch(led_type){
 	case digital:
@@ -207,14 +207,14 @@ void init_red_onboard_led(led_type_t led_type){
 	/**
 	 * Set PTB18 as output for red on-board LED
 	 */
-    PTB->PDDR |= MASK(PORTB_RED_LED_PIN);
+	PTB->PDDR |= MASK(1UL, PORTB_RED_LED_PIN);
 
 
 
-    /**
-     * Turn red on-board LED off. Note that on-board LEDs are active-low
-     */
-    digital_control_onboard_leds(red, digital_clear);
+	/**
+	 * Turn red on-board LED off. Note that on-board LEDs are active-low
+	 */
+	digital_control_onboard_leds(red, digital_clear);
 }
 
 
@@ -223,17 +223,17 @@ void init_green_onboard_led(led_type_t led_type){
 
 
 	/**
-     * Enable clock to Port B for green on-board LED
-     */
-    SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
+	 * Enable clock to Port B for green on-board LED
+	 */
+	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
 
 
 
-    /**
-     * Set PTB19 as GPIO for green on-board LED
-     *
-     * The MUX selection in PCR is done with bits 10:8
-     */
+	/**
+	 * Set PTB19 as GPIO for green on-board LED
+	 *
+	 * The MUX selection in PCR is done with bits 10:8
+	 */
 	PORTB->PCR[PORTB_GREEN_LED_PIN] &= ~PORT_PCR_MUX_MASK;
 	switch(led_type){
 	case digital:
@@ -251,14 +251,14 @@ void init_green_onboard_led(led_type_t led_type){
 	/**
 	 * Set PTB19 as output for green on-board LED
 	 */
-    PTB->PDDR |= MASK(PORTB_GREEN_LED_PIN);
+	PTB->PDDR |= MASK(1UL, PORTB_GREEN_LED_PIN);
 
 
 
-    /**
-     * Turn green on-board LED off. Note that on-board LEDs are active-low
-     */
-    digital_control_onboard_leds(green, digital_clear);
+	/**
+	 * Turn green on-board LED off. Note that on-board LEDs are active-low
+	 */
+	digital_control_onboard_leds(green, digital_clear);
 }
 
 
@@ -267,17 +267,17 @@ void init_blue_onboard_led(led_type_t led_type){
 
 
 	/**
-     * Enable clock to Port D for blue on-board LED
-     */
-    SIM->SCGC5 |= SIM_SCGC5_PORTD_MASK;
+	 * Enable clock to Port D for blue on-board LED
+	 */
+	SIM->SCGC5 |= SIM_SCGC5_PORTD_MASK;
 
 
 
-    /**
-     * Set PTD1 as GPIO for blue on-board LED
-     *
-     * The MUX selection in PCR is done with bits 10:8
-     */
+	/**
+	 * Set PTD1 as GPIO for blue on-board LED
+	 *
+	 * The MUX selection in PCR is done with bits 10:8
+	 */
 	PORTD->PCR[PORTD_BLUE_LED_PIN] &= ~PORT_PCR_MUX_MASK;
 	switch(led_type){
 	case digital:
@@ -295,14 +295,14 @@ void init_blue_onboard_led(led_type_t led_type){
 	/**
 	 * Set PTD1 as output for blue on-board LED
 	 */
-    PTD->PDDR |= MASK(PORTD_BLUE_LED_PIN);
+	PTD->PDDR |= MASK(1UL, PORTD_BLUE_LED_PIN);
 
 
 
-    /**
-     * Turn all on-board LEDs off. Note that on-board LEDs are active-low
-     */
-    digital_control_onboard_leds(blue, digital_clear);
+	/**
+	 * Turn all on-board LEDs off. Note that on-board LEDs are active-low
+	 */
+	digital_control_onboard_leds(blue, digital_clear);
 }
 
 

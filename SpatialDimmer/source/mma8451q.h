@@ -25,7 +25,7 @@ typedef enum accelerometer_axis_e{
  * @brief	Lowest possible value when working with XYZ (14-bit resolution)
  */
 #define XYZ_MIN\
-	(-8192)
+	(-4096)
 
 
 
@@ -33,7 +33,7 @@ typedef enum accelerometer_axis_e{
  * @brief	Highest possible value when working with XYZ (14-bit resolution)
  */
 #define XYZ_MAX\
-	(8191)
+	(4095)
 
 
 

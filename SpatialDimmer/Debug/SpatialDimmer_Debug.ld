@@ -6,7 +6,7 @@
  * Generated linker script file for MKL25Z128xxx4
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.30
- * MCUXpresso IDE v11.6.0 [Build 8187] [2022-07-13] on Dec 4, 2022, 8:01:51 PM
+ * MCUXpresso IDE v11.6.0 [Build 8187] [2022-07-13] on Dec 5, 2022, 8:37:39 PM
  */
 
 INCLUDE "SpatialDimmer_Debug_library.ld"

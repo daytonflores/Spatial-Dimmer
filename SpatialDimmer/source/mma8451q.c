@@ -241,6 +241,7 @@ int init_onboard_accelerometer(void){
 	 * Configure on-board accelerometer
 	 */
 	if(i2c0_read_byte(MMA8451Q_ADDRESS, WHO_AM_I_REG) == DEVICE_ID){
+		for(int i = 0; i < 1250000; i++);
 		i2c0_write_byte(MMA8451Q_ADDRESS, CTRL1_REG_ADDRESS, data);
 		return EXIT_SUCCESS;
 	}
